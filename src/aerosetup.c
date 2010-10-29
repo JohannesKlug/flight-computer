@@ -23,7 +23,6 @@ int fd;
 
 int main()
 {
-  //int fd;
   struct termios newtio;
   unsigned char aero_tx[6] = {'A','T','+','+','+','\r'};
 
@@ -54,7 +53,7 @@ int main()
       char data[2];
       readStatus(data);
 
-        printf("Firmware version: ");
+        printf("Firmware version (in hex): ");
         printf("%x\n",(int)data[0]);
         if (data[1] == 0x00) { 
           printf("Aerocomm unit in Server mode\n");
@@ -70,7 +69,7 @@ int main()
         }
      
 
-      printf("Temperature (in hex) is: ");
+      printf("Temperature (in hex): ");
       sleep(1);
       char temperature = readTemperature();
       printf("%x\n",(int)temperature);
@@ -127,7 +126,6 @@ int readStatus(char* data) {
       printf("Didn't receive a valid response to Status Request, exiting ...\n");
       return 0;
     } else {
-//      char data[2];
       data[0] = status_rx[1];
       data[1] = status_rx[2];
       return 1;
