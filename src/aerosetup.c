@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <string.h>
+#include "aerosetup.h"
 
 /*
   Perform default initialisation for Aerocomm module.
@@ -17,16 +18,19 @@
   
   2010-10-29 Johannes Klug (johannes.klug@logica.com)
  */
+
+int fd;
+
 int main()
 {
-  int fd;
+  //int fd;
   struct termios newtio;
   unsigned char aero_tx[6] = {'A','T','+','+','+','\r'};
  // unsigned char ee[] = { 0xCC, 0xC1, 0xC1, 0x01, 0x90 };
   unsigned char ee[] = { 0xCC, 0x41, 0x54, 0x4F, 0x0D };
   unsigned char rx[4];
 
-  fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+  fd = open("/dev/ttyTS1", O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd < 0) {
     perror("Unable to open device, ensure drivers are loaded\n");
     return 1;
@@ -73,6 +77,13 @@ int main()
           return 1;
         }
       }
+
+      printf("Temperature (in hex) is: ");
+      sleep(1);
+      char temperature = readTemperature();
+      printf("%x\n",(int)temperature);
+      sleep(1);
+
       // Send Exit Command Mode
       write(fd,ee,5);
       sleep(1);
@@ -98,5 +109,19 @@ int main()
   }
   close(fd);
   return 0;
+}
+
+char readTemperature() {
+  unsigned char tx[2] = { 0xCC, 0xA4};
+  unsigned char rx[2];
+  write(fd, tx, 2);
+  sleep(1);
+  if(read(fd, rx, 2) == 2) {
+    if(rx[0] != 0xCC) {
+      printf("Didn't receive a valid response to Status Request, exiting ...\n");
+      return 0;
+    }
+    return rx[1];
+  }
 }
 

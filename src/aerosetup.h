@@ -1,0 +1,2 @@
+int main();
+char readTemperature();
