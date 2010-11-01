@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <string.h>
+#include "aerosetup.h"
 
 /*
   This program reads one byte at a time from an Aerocomm device. 
@@ -38,9 +39,10 @@ int main()
 //  sleep(1);       //1 sec guard time
   while(1) {
     if(read(fd, rx, 1) == 1) {
-      printf("I received something!");
-      printf(&rx[0]);
-      sleep(1);
+      //printf("I received something!");
+    //  printf("%c", &rx[0]);
+    puts(rx);
+     // sleep(1);
     }
   }
 /*

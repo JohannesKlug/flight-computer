@@ -19,7 +19,8 @@ int main()
  // unsigned char ee[] = { 0xCC, 0xC1, 0xC1, 0x01, 0x90 };
  // unsigned char ee[] = { 0xCC, 0x41, 0x54, 0x4F, 0x0D };
 //  unsigned char rx[1];
-  unsigned char aero_tx[1] = {0x60};
+//  unsigned char aero_tx[1] = {0x60};
+  unsigned char aero_tx[] = "Hello, World! This is not rocket surgery.";
 
   fd = open("/dev/ttyTS1", O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd < 0) {
@@ -38,7 +39,10 @@ int main()
 //  write(fd, aero_tx, 6);
 //  sleep(1);       //1 sec guard time
   while(1) {
-    write(fd, aero_tx, 1);
+    write(fd, aero_tx, strlen(aero_tx));
+    puts("Written ");
+    printf("%d", strlen(aero_tx));
+    puts(" bytes to device.");
     sleep(1);       //1 sec guard time
   }
 /*
