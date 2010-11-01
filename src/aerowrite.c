@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <string.h>
+#include "slip.h"
 
 /*
   This program reads one byte at a time from an Aerocomm device. 
@@ -21,6 +22,8 @@ int main()
 //  unsigned char rx[1];
 //  unsigned char aero_tx[1] = {0x60};
   unsigned char aero_tx[] = "Hello, World! This is not rocket surgery.";
+  unsigned char SLIP_TM[186]; /* Max. theoretical size: 2+23*4*2 = 186 bytes */
+  int slen = 0;
 
   fd = open("/dev/ttyTS1", O_RDWR | O_NOCTTY | O_NDELAY);
   if (fd < 0) {
@@ -39,10 +42,16 @@ int main()
 //  write(fd, aero_tx, 6);
 //  sleep(1);       //1 sec guard time
   while(1) {
+
+    slen = convertToSLIP(SLIP_TM, aero_tx, strlen(aero_tx));
+    printf("Downlinking %d bytes.\n", slen );
+    write(fd, SLIP_TM, slen);
+/*
     write(fd, aero_tx, strlen(aero_tx));
-    puts("Written ");
+    printf("Written ");
     printf("%d", strlen(aero_tx));
-    puts(" bytes to device.");
+    printf(" bytes to device.");
+*/
     sleep(1);       //1 sec guard time
   }
 /*
